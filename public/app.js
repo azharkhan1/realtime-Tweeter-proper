@@ -1,5 +1,5 @@
 
-  const url = 'https://realtimetweeter.herokuapp.com/';
+  const url = 'https://realtimetweeter.herokuapp.com';
 // const url = "http://localhost:3000";
 var posts = document.getElementById("posts")
 var userPost = document.getElementById("userPost");
