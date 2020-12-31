@@ -130,7 +130,7 @@ app.post("/userPost", (req, res, next) => {
 
     res.send(usersData);
 
-    io.emit("NEW_POST", JSON.stringify(usersData[usersData.length - 1]))
+    io.emit("NEW_POST", JSON.stringify(usersData))
 })
 
 app.get("/successfullSignup", (req, res, next) => {

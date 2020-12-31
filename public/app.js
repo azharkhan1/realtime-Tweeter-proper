@@ -154,11 +154,11 @@ socket.on("NEW_POST", (newPost) => {
 
     let jsonRes = JSON.parse(newPost);
     // console.log(jsonRes);
-
-    for (let i = 0 ; i<jsonRes.userPosts.length ; i++)
+console.log(jsonRes[currentUser])
+    for (let i = 0 ; i<jsonRes[currentUser].userPosts.length ; i++)
     {
-        console.log(jsonRes.userPosts[i])
-        postContent.innerHTML = `<h4 class="userName">${jsonRes.userName}</h4> <p class="userPost">${jsonRes.userPosts[i]}</p>`;
+   
+        postContent.innerHTML = `<h4 class="userName">${jsonRes[currentUser].userName}</h4> <p class="userPost">${jsonRes[currentUser].userPosts[i]}</p>`;
    
     }
 
