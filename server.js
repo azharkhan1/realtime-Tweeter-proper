@@ -1,14 +1,21 @@
-let usersData = [
+let users = [
     {
         userEmail: "azhar40@live.co.uk",
         userPassword: "azharkhan",
         userName: "Azhar khan",
         userPosts: [],
     },
+];
+
+let tweets = [{
+    userName: "some name",
+    tweetText: "some text"
+}
+
 ]
 
 
-var currentUser;
+
 var http = require("http");
 var path = require("path");
 let socketIo = require("socket.io");
@@ -25,9 +32,6 @@ var io = socketIo(server);
 
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
 app.use(cors());
 app.use(morgan('dev'));
 
@@ -35,106 +39,92 @@ app.use("/", express.static(path.resolve(path.join(__dirname, "public"))));
 
 const PORT = process.env.PORT || 3000;
 
-
-
-
-
 app.post("/signup", (req, res, next) => {
 
     var currEmail = req.body.userEmail;
-    var found = false;
+    var isFound = false;
 
-    for (var i = 0; i < usersData.length; i++) {
-        if (usersData[i].userEmail === currEmail) {
-            found = true;
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].userEmail === currEmail) {
+            isFound = true;
             break;
         }
     }
-    if (found) {
-        res.send(
-            {
-                message: "Email already exsist",
-                status: 400,
-            })
+    if (isFound) {
+        res.send({
+            message: "Email already exsist",
+            status: 400,
+        })
+    } else {
+        users.push({
+            userEmail: req.body.userEmail,
+            userPassword: req.body.userPassword,
+            userName: req.body.userName,
+            userPosts: [],
+        });
+        res.send({
+            message: "Signed up succesfully",
+            status: 200,
+        })
     }
-    else {
-        usersData.push(req.body);
-        res.send(
-            res.send({
-                message: "Signed up succesfully",
-                status: 200,
-            })
-        );
-    }
-
-
 });
 
 app.post("/login", function (req, res, next) {
 
 
-    let obj = req.body;
-    let found = false;
+    let email = req.body.userEmail;
+    let password = req.body.password;
+    let isFound = false;
 
-    for (var i = 0; i < usersData.length; i++) {
-        if (usersData[i].userEmail === obj.email) {
-            found = i;
-            currentUser = found;
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].userEmail === email) {
+            isFound = i;
             break;
         }
     }
-    if (found === false) {
+    if (isFound) {
+        if (users[isFound].userPassword === password) {
+
+            res.send({
+                message: "Signed in succesfully",
+                status: 200,
+                currentUser: {
+                    userName: users[isFound].userName,
+                    userEmail: users[isFound].userEmail,
+                }
+            });
+        } else {
+            res.send({
+                message: "password is wrong",
+                status: 400,
+            });
+        }
+
+    } else {
         res.send({
-            message: "Email or password is wrong",
+            message: "User not found",
             status: 400,
         })
     }
-    else if (usersData[found].userPassword === obj.password) {
-        currentUser = found;
-        res.send({
-            message: "Signed in succesfully",
-            status: 200,
-            currentUser: found,
-        });
-
-    }
-    else {
-        res.send(
-            {
-                message: "Email or password is wrong",
-                status: 400,
-            }
-        );
-    }
 })
-
-
 
 io.on("connection", (user) => {
     console.log("user connected");
-
-    // io.on("POST" , (data)=>{
-    //     let reqBody = data;
-    //     usersData[reqBody.currentUser].userPosts.push(reqBody.userPost);
-    //     io.emit(usersData);
-    // })
 })
 
+app.post("/tweet", (req, res, next) => {
 
-
-
-app.post("/userPost", (req, res, next) => {
-    let reqBody = req.body;
-    console.log(usersData);
-    usersData[reqBody.currentUser].userPosts.push(reqBody.userPost);
-
-    res.send(usersData);
-
-    io.emit("NEW_POST", JSON.stringify(usersData))
+    tweets.push({
+        userName: req.body.userName,
+        tweetText: req.body.tweetText,
+    })
+    res.send(tweets);
+                                           
+    io.emit("NEW_POST", JSON.stringify(tweets[tweets.length - 1]))
 })
 
-app.get("/successfullSignup", (req, res, next) => {
-    res.send(usersData);
+app.get("/tweets", (req, res, next) => {
+    res.send(tweets);
 });
 
 
