@@ -101,6 +101,7 @@ const post = () => {
         if (Http.readyState === 4) {
             jsonRes = JSON.parse((Http.responseText));
             console.log("posted success");
+            document.getElementById("userPost").innerHTML = "";
         }
     }
 }
