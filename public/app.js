@@ -1,6 +1,6 @@
 
-// const url = 'https://realtimetweeter.herokuapp.com';
-const url = "http://localhost:3000";
+const url = 'https://realtimetweeter.herokuapp.com';
+// const url = "http://localhost:3000";
 var userPost = document.getElementById("userPost");
 
 let currentUser;
