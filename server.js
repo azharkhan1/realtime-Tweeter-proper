@@ -7,10 +7,8 @@ let users = [
     },
 ];
 
-let tweets = [{
-    userName: "some name",
-    tweetText: "some text"
-}
+let tweets = [
+
 
 ]
 
